@@ -1,0 +1,43 @@
+draw_Fig_3a_fun:
+Deaths averted globally in scenario 2 relative to scenario 1 in the 2020 and 2030 birth cohorts
+709732 (582513, 885156)
+
+
+
+prepare_Fig_4a_data_struc_fun:
+Global year of elimination (HBsAg prevalence falls below 0.1% in five-year-olds) in scenario 2
+2052 (2050, 2054)
+
+
+
+prepare_Fig_4b_data_struc_fun:
+Year of elimination (HBsAg prevalence falls below 0.1% in five-year-olds) in AFRO in scenario 2a
+after 2100 (after 2100, after 2100)
+Year of elimination (HBsAg prevalence falls below 0.1% in five-year-olds) in AFRO in scenario 2b
+2089 (2085, 2095)
+Year of elimination (HBsAg prevalence falls below 0.1% in five-year-olds) in AFRO in scenario 2c
+2069 (2067, 2071)
+Year of elimination (HBsAg prevalence falls below 0.1% in five-year-olds) in AFRO in scenario 2d
+2059 (2058, 2061)
+
+
+
+prepare_Fig_5a_data_struc_fun:
+Additional HBV-related deaths globally in scenario 3a relative to scenario 1 in the 2020 and 2030 birth cohorts
+3854 (2988, 4991)
+Additional HBV-related deaths globally in scenario 3b relative to scenario 1 in the 2020 and 2030 birth cohorts
+7708 (5976, 9983)
+Additional HBV-related deaths globally in scenario 3c relative to scenario 1 in the 2020 and 2030 birth cohorts
+11563 (8965, 14975)
+Additional HBV-related deaths globally in scenario 3d relative to scenario 1 in the 2020 and 2030 birth cohorts
+15417 (11954, 19967)
+
+
+
+prepare_Fig_5b_data_struc_fun:
+Additional HBV-related deaths globally in scenario 4a relative to scenario 2 in the 2020 and 2030 birth cohorts
+196046 (162312, 243720)
+Additional HBV-related deaths globally in scenario 4b relative to scenario 2 in the 2020 and 2030 birth cohorts
+343676 (282879, 428296)
+Additional HBV-related deaths globally in scenario 4c relative to scenario 2 in the 2020 and 2030 birth cohorts
+575398 (472539, 717553)
