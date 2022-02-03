@@ -1,5 +1,5 @@
 # icl-hbv
-The HBV model developed at Imperial College London
+The HBV model developed at Imperial College London.
 
 All of the scripts run in MATLAB (version R2020b).
 
