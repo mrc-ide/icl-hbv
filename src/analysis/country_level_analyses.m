@@ -6,7 +6,7 @@ function country_level_analyses(sensitivity_analysis,...
     num_in_treatment_2016_map,pop_size_HBsAg_treatment_map,treatment_rates_map,...
     country_s_e_HCCdeaths_map,...
     params_map,dwvec,stochas_params_mat,country_start_cols,...
-    filename_diaries,...
+    basedir,filename_diaries,...
     num_states,num_year_divisions,dt,ages,num_age_steps,start_year,T0,end_year,...
     theta,CFR_Acute,rate_6months,ECofactor,p_ChronicCarriage)
 
@@ -43,7 +43,7 @@ function country_level_analyses(sensitivity_analysis,...
         disp(['The "' scenario '" scenario (run number ' stochas_run_str ') started at ' datestr(begin_time_scenario)])
                 
         diary off
-        diary(filename_diaries)
+        diary(fullfile(basedir,'outputs',filename_diaries))
 
 
         countryMap = containers.Map; 
@@ -603,9 +603,9 @@ function country_level_analyses(sensitivity_analysis,...
         end % end for country_num loop
 
         outMap(scenario) = countryMap;
-        save(filename_results,'outMap') 
+        save(fullfile(basedir,'outputs',filename_results),'outMap') 
         if strcmp(stochas_run_str,'1') && strcmp(sensitivity_analysis,'default')
-            save('scenarios_array.mat','label_array') % only version saved after last scenario is correct
+            save(fullfile(basedir,'outputs','scenarios_array.mat'),'label_array') % only version saved after last scenario is correct
         end
 
         time_taken_for_scenario = datetime('now') - begin_time_scenario;

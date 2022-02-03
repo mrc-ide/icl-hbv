@@ -10,7 +10,11 @@ clear
 
 
 
-load('regions_countries_data.mat')
+basedir = fileparts(fileparts(pwd)); % path for folder two levels up from script
+
+
+
+load(fullfile(basedir,'src','analysis','data_and_script_for_figures','regions_countries_data.mat'))
 % contains num_stochas_runs, num_year_divisions, num_time_steps,
 % calandar_years_vec, num_calandar_years, calandar_years_pos_vec, 
 % cohort_years_vec, num_cohort_years, cohort_years_pos_vec, 
@@ -99,7 +103,8 @@ draw_Suppl_Tables_3_4_fun(...
     scenario_nums_struct,...
     num_regions_global,regions_global_list,...
     countries_list,...
-    stochas_regions_cell_array)
+    stochas_regions_cell_array,...
+    basedir)
 
 
 
@@ -1531,7 +1536,8 @@ function draw_Suppl_Tables_3_4_fun(...
     scenario_nums_struct,...
     num_regions_global,regions_global_list,...
     countries_list,...
-    regions_cell_array)
+    regions_cell_array,...
+    basedir)
 
 
     status_quo_infant_status_quo_BD_num = scenario_nums_struct.status_quo_infant_status_quo_BD_num;
@@ -1725,7 +1731,7 @@ function draw_Suppl_Tables_3_4_fun(...
 
 
 
-    filename = 'Suppl_tables_3_4.xlsx';
+    filename = fullfile(basedir,'outputs','Suppl_tables_3_4.xlsx');
 
 
     tab_mean=table(...

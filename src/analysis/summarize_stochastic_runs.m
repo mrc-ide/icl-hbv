@@ -7,6 +7,9 @@ clear
 % particles are shuffled within each country before forming regional sums
 
 
+basedir = fileparts(fileparts(pwd)); % path for folder two levels up from script
+
+
 sensitivity_analysis_list = {'default','infant_100','treat_medium','treat_high'};
 num_sensitivity_analyses = length(sensitivity_analysis_list);
 
@@ -18,9 +21,9 @@ begin_time_run = datetime('now');
 disp(['This analysis started at ' datestr(begin_time_run)])
 
 
-load('ListOfISOs.mat') % contains ListOfISOs
-load('WHO_region_map.mat') % contains WHO_region_map
-load('particle_index_countries.mat') % contains particle_index_countries_mat
+load(fullfile(basedir,'resources','ListOfISOs.mat')) % contains ListOfISOs
+load(fullfile(basedir,'resources','WHO_region_map.mat')) % contains WHO_region_map
+load(fullfile(basedir,'resources','particle_index_countries.mat')) % contains particle_index_countries_mat
 
 
 ListOfAllScenarios = {...
@@ -97,7 +100,8 @@ for sensitivity_analysis_num=1:num_sensitivity_analyses
             WHO_region_map,regions_list,num_regions,...
             ListOfISOs,num_countries,...
             num_years,...
-            particle_index_countries_mod_mat)
+            particle_index_countries_mod_mat,...
+            basedir)
 
         num_scenarios_left = num_all_scenarios - scenario_num;
         if num_scenarios_left>0        
@@ -138,7 +142,8 @@ function summarize_stochastic_runs_sens_scenario(sensitivity_analysis,...
     WHO_region_map,regions_list,num_regions,...
     ListOfISOs,num_countries,...
     num_years,...
-    particle_index_countries_mat)
+    particle_index_countries_mat,...
+    basedir)
 
 
     num_runs_string = num2str(num_runs);
@@ -148,7 +153,7 @@ function summarize_stochastic_runs_sens_scenario(sensitivity_analysis,...
     end_string = '.mat';
     particles_str = 'stochastic_run_2';    
     infilename = [begin_string sensitivity_analysis '_' particles_str end_string]; % results_countries_stochastic_run_1.mat
-    load(infilename); % contains outMap
+    load(fullfile(basedir,'outputs',infilename)); % contains outMap
     assert(length(outMap)==num_all_scenarios) % 12 scenarios
     Runs_map_run_2_scenario_ISO = outMap(scenario); % sensitivity analysis, treatment, scenario, run_num results
     Runs_map_run_2_scenario_ISO = Runs_map_run_2_scenario_ISO(ListOfISOs{1}); % sensitivity analysis, treatment, scenario, run_num AFG's results
@@ -203,7 +208,7 @@ function summarize_stochastic_runs_sens_scenario(sensitivity_analysis,...
 
         particles_str = ['stochastic_run_', stochas_run_str];    
         infilename = [begin_string sensitivity_analysis '_' particles_str end_string]; % results_countries_stochastic_run_1.mat
-        load(infilename); % contains outMap
+        load(fullfile(basedir,'outputs',infilename)); % contains outMap
         assert(length(outMap)==num_all_scenarios) % 12 scenarios
         countryMap_source = outMap(scenario);
         assert(length(countryMap_source)==num_countries)
@@ -457,7 +462,7 @@ function summarize_stochastic_runs_sens_scenario(sensitivity_analysis,...
     assert(regionMap('Global').num_countries==num_countries)
 
     save(...
-        ['stochastic_summary_countries_regions_global_' sensitivity_analysis '_scenario_', scenario_num_string '.mat'],...
+        fullfile(basedir,'outputs',['stochastic_summary_countries_regions_global_' sensitivity_analysis '_scenario_', scenario_num_string '.mat']),...
         'countryMap','regionMap')
 
 

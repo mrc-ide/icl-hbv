@@ -8,23 +8,28 @@ clear
 % This script, which contains 4 sensitivity analyses, will therefore take about 100 days to run on a desktop computer.
 
 
+basedir = fileparts(fileparts(pwd)); % path for folder two levels up from script
+addpath(fullfile(basedir,'src','analysis')) % path for function country_level_analyses
+addpath(fullfile(basedir,'src','model')) % path for function HBVmodel
+
+
 sensitivity_analysis_list = {'default','infant_100','treat_medium','treat_high'};
 num_sensitivity_analyses = length(sensitivity_analysis_list);
 
 num_stochas_runs = 200;
 
 
-load('ListOfISOs.mat') % contains ListOfISOs
-load('vaccination_coverages.mat') % contains BD_table and HepB3_table
-load('reference_prevalences.mat') % contains country_s_e_HCCdeaths_map
-load('params_map.mat') % contains params_map and dwvec
-load('stochastic_parameters_mat.mat') % contains stochas_params_mat
-load('treatment_2016_map.mat') % contains num_in_treatment_2016_map and pop_size_HBsAg_treatment_map
-load('treatment_rates_map.mat') % contains treatment_rates_map
+load(fullfile(basedir,'resources','ListOfISOs.mat')) % contains ListOfISOs
+load(fullfile(basedir,'resources','vaccination_coverages.mat')) % contains BD_table and HepB3_table
+load(fullfile(basedir,'resources','reference_prevalences.mat')) % contains country_s_e_HCCdeaths_map
+load(fullfile(basedir,'resources','params_map.mat')) % contains params_map and dwvec
+load(fullfile(basedir,'resources','stochastic_parameters_mat.mat')) % contains stochas_params_mat
+load(fullfile(basedir,'resources','treatment_2016_map.mat')) % contains num_in_treatment_2016_map and pop_size_HBsAg_treatment_map
+load(fullfile(basedir,'resources','treatment_rates_map.mat')) % contains treatment_rates_map
 
 
 filename_diaries = 'diary_countries.out';
-diary(filename_diaries)
+diary(fullfile(basedir,'outputs',filename_diaries))
 % writes a copy of all subsequent keyboard input and the resulting output (except it does not include graphics) to the named file
 % if the file already exists, output is appended to the end of the file
 
@@ -142,7 +147,7 @@ for sensitivity_analysis_num=1:num_sensitivity_analyses
             num_in_treatment_2016_map,pop_size_HBsAg_treatment_map,treatment_rates_map,...
             country_s_e_HCCdeaths_map,...
             params_map,dwvec,stochas_params_mat,country_start_cols,...
-            filename_diaries,...
+            basedir,filename_diaries,...
             num_states,num_year_divisions,dt,ages,num_age_steps,start_year,T0,end_year,...
             theta,CFR_Acute,rate_6months,ECofactor,p_ChronicCarriage)
 

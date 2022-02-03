@@ -9,6 +9,9 @@
 clear
 
 
+basedir = fileparts(fileparts(pwd)); % path for folder two levels up from script
+
+
 sensitivity_analysis_list = {'default','infant_100','treat_medium','treat_high'};
 num_sensitivity_analyses = length(sensitivity_analysis_list);
 
@@ -16,10 +19,13 @@ num_sensitivity_analyses = length(sensitivity_analysis_list);
 num_stochas_runs = 200;
 
 
-Regions_map = load('WHO_region_map.mat').WHO_region_map;
-ListOfScenarioLabels = load('scenarios_array.mat').label_array;
+Regions_map = load(fullfile(basedir,'resources','WHO_region_map.mat'));
+Regions_map = Regions_map.WHO_region_map;
+ListOfScenarioLabels = load(fullfile(basedir,'outputs','scenarios_array.mat'));
+ListOfScenarioLabels = ListOfScenarioLabels.label_array;
 filename = 'results_countries_default_stochastic_run_1.mat';
-results_default_run_1_map = load(filename).outMap;
+results_default_run_1_map = load(fullfile(basedir,'outputs',filename));
+results_default_run_1_map = results_default_run_1_map.outMap;
 
 
 num_scenarios = length(ListOfScenarioLabels);
@@ -54,7 +60,7 @@ scenario_nums_struct.BD_delayed_slowed_2025_2040_num = 12;
 assert(length(fieldnames(scenario_nums_struct))==num_scenarios)
 
 
-infilepath_stochastic_results = '';
+infilepath_stochastic_results = fullfile(basedir,'outputs');
 file_string = 'default';
 [regions_cell_array_default,countries_cell_array_default] = make_stochas_regions_countries_cell_arrays(...
     infilepath_stochastic_results,file_string,...
@@ -238,7 +244,8 @@ draw_Suppl_Tables_3_4_fun(...
     scenario_nums_struct,...
     num_regions_global,regions_global_list,...
     countries_list,...
-    regions_cell_array_default)
+    regions_cell_array_default,...
+    basedir)
 
 
 
@@ -1871,7 +1878,8 @@ function draw_Suppl_Tables_3_4_fun(...
     scenario_nums_struct,...
     num_regions_global,regions_global_list,...
     countries_list,...
-    regions_cell_array)
+    regions_cell_array,...
+    basedir)
 
 
     status_quo_infant_status_quo_BD_num = scenario_nums_struct.status_quo_infant_status_quo_BD_num;
@@ -2065,7 +2073,7 @@ function draw_Suppl_Tables_3_4_fun(...
 
 
 
-    filename = 'Suppl_tables_3_4.xlsx';
+    filename = fullfile(basedir,'outputs','Suppl_tables_3_4.xlsx');
 
 
     tab_mean=table(...
@@ -2710,7 +2718,7 @@ end % end function make_stochas_regions_countries_cell_arrays
 function [results_regions_scenario,results_countries_scenario] = get_regions_countries_structures(infilepath_stochastic_results,file_string,scenario_num)
 
     results_regions_countries_scenario = ...
-        load([infilepath_stochastic_results 'stochastic_summary_countries_regions_global_' file_string '_scenario_' scenario_num '.mat']);
+        load(fullfile(infilepath_stochastic_results,['stochastic_summary_countries_regions_global_' file_string '_scenario_' scenario_num '.mat']));
     % contains countryMap and regionMap
     results_regions_scenario = results_regions_countries_scenario.regionMap;
     results_countries_scenario = results_regions_countries_scenario.countryMap;
