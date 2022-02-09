@@ -1,5 +1,5 @@
 # icl-hbv
-The HBV model developed at Imperial College London.
+The HBV model developed at Imperial College London, as described in the paper ["The impact of the timely birth dose vaccine on the global elimination of hepatitis B"](https://www.nature.com/articles/s41467-021-26475-6).
 
 All of the scripts run in MATLAB (version R2020b).
 
