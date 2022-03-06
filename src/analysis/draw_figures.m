@@ -9,7 +9,12 @@
 clear
 
 
-basedir = fileparts(fileparts(pwd)); % path for folder two levels up from script
+currentFolder = pwd;
+pat = fullfile('icl-hbv','src','analysis');
+if ~endsWith(currentFolder,pat)
+    warning(['Please run this script from within the folder ' pat])
+end
+basedir = fileparts(fileparts(currentFolder)); % path for folder two levels up from script
 
 
 sensitivity_analysis_list = {'default','infant_100','treat_medium','treat_high'};
@@ -19,12 +24,17 @@ num_sensitivity_analyses = length(sensitivity_analysis_list);
 num_stochas_runs = 200;
 
 
-Regions_map = load(fullfile(basedir,'resources','WHO_region_map.mat'));
+Regions_map = load(fullfile(basedir,'resources','WHO_region_map.mat')); % contains WHO_region_map
 Regions_map = Regions_map.WHO_region_map;
-ListOfScenarioLabels = load(fullfile(basedir,'outputs','scenarios_array.mat'));
+full_filename = fullfile(basedir,'outputs','scenarios_array.mat');
+ListOfScenarioLabels = load(full_filename); % contains label_array
 ListOfScenarioLabels = ListOfScenarioLabels.label_array;
 filename = 'results_countries_default_stochastic_run_1.mat';
-results_default_run_1_map = load(fullfile(basedir,'outputs',filename));
+full_filename = fullfile(basedir,'outputs',filename);
+if exist(full_filename)~=2
+    warning('There is a copy of this file in the Dropbox folder provided in the README.md file in the root directory.')
+end
+results_default_run_1_map = load(full_filename); % contains outMap
 results_default_run_1_map = results_default_run_1_map.outMap;
 
 
@@ -2376,47 +2386,47 @@ function [diff_scenarios_mean_mat,diff_scenarios_lower_mat,diff_scenarios_upper_
     larger_scenario_mean_mat,larger_scenario_lower_mat,larger_scenario_upper_mat,...
     smaller_scenario_mean_mat,smaller_scenario_lower_mat,smaller_scenario_upper_mat)
 
-        larger_scenario_results_mat = get_model_output(countries_list,cohort_years_vec,cohort_years_pos_vec,...
-            country_groupings,geographical_unit,larger_scenario_name,larger_scenario_num,results_cell_array,num_stochas_runs,results_field_of_interest);
-        assert(isequal(size(larger_scenario_results_mat),[num_stochas_runs num_cohort_years]))
-        if sum_cols
-            larger_scenario_results_mat = sum(larger_scenario_results_mat,2);
-        end
-        if exist('larger_scenario_mean_mat')==1
-            larger_scenario_mean_mat(geographical_unit_num,:) = mean(larger_scenario_results_mat,1);
-            larger_scenario_lower_mat(geographical_unit_num,:) = prctile(larger_scenario_results_mat,2.5,1);
-            larger_scenario_upper_mat(geographical_unit_num,:) = prctile(larger_scenario_results_mat,97.5,1);
-        else
-            larger_scenario_mean_mat = NaN(num_stochas_runs,num_cohort_years);
-            larger_scenario_lower_mat = NaN(num_stochas_runs,num_cohort_years);
-            larger_scenario_upper_mat = NaN(num_stochas_runs,num_cohort_years);
-        end
+    larger_scenario_results_mat = get_model_output(countries_list,cohort_years_vec,cohort_years_pos_vec,...
+        country_groupings,geographical_unit,larger_scenario_name,larger_scenario_num,results_cell_array,num_stochas_runs,results_field_of_interest);
+    assert(isequal(size(larger_scenario_results_mat),[num_stochas_runs num_cohort_years]))
+    if sum_cols
+        larger_scenario_results_mat = sum(larger_scenario_results_mat,2);
+    end
+    if exist('larger_scenario_mean_mat')==1
+        larger_scenario_mean_mat(geographical_unit_num,:) = mean(larger_scenario_results_mat,1);
+        larger_scenario_lower_mat(geographical_unit_num,:) = prctile(larger_scenario_results_mat,2.5,1);
+        larger_scenario_upper_mat(geographical_unit_num,:) = prctile(larger_scenario_results_mat,97.5,1);
+    else
+        larger_scenario_mean_mat = NaN(num_stochas_runs,num_cohort_years);
+        larger_scenario_lower_mat = NaN(num_stochas_runs,num_cohort_years);
+        larger_scenario_upper_mat = NaN(num_stochas_runs,num_cohort_years);
+    end
 
-        smaller_scenario_results_mat = get_model_output(countries_list,cohort_years_vec,cohort_years_pos_vec,...
-            country_groupings,geographical_unit,smaller_scenario_name,smaller_scenario_num,results_cell_array,num_stochas_runs,results_field_of_interest);
-        assert(isequal(size(smaller_scenario_results_mat),[num_stochas_runs num_cohort_years]))
-        if sum_cols
-            smaller_scenario_results_mat = sum(smaller_scenario_results_mat,2);
-        end
-        if exist('smaller_scenario_mean_mat')==1
-            smaller_scenario_mean_mat(geographical_unit_num,:) = mean(smaller_scenario_results_mat,1);
-            smaller_scenario_lower_mat(geographical_unit_num,:) = prctile(smaller_scenario_results_mat,2.5,1);
-            smaller_scenario_upper_mat(geographical_unit_num,:) = prctile(smaller_scenario_results_mat,97.5,1);
-        else
-            smaller_scenario_mean_mat = NaN(num_stochas_runs,num_cohort_years);
-            smaller_scenario_lower_mat = NaN(num_stochas_runs,num_cohort_years);
-            smaller_scenario_upper_mat = NaN(num_stochas_runs,num_cohort_years);
-        end
+    smaller_scenario_results_mat = get_model_output(countries_list,cohort_years_vec,cohort_years_pos_vec,...
+        country_groupings,geographical_unit,smaller_scenario_name,smaller_scenario_num,results_cell_array,num_stochas_runs,results_field_of_interest);
+    assert(isequal(size(smaller_scenario_results_mat),[num_stochas_runs num_cohort_years]))
+    if sum_cols
+        smaller_scenario_results_mat = sum(smaller_scenario_results_mat,2);
+    end
+    if exist('smaller_scenario_mean_mat')==1
+        smaller_scenario_mean_mat(geographical_unit_num,:) = mean(smaller_scenario_results_mat,1);
+        smaller_scenario_lower_mat(geographical_unit_num,:) = prctile(smaller_scenario_results_mat,2.5,1);
+        smaller_scenario_upper_mat(geographical_unit_num,:) = prctile(smaller_scenario_results_mat,97.5,1);
+    else
+        smaller_scenario_mean_mat = NaN(num_stochas_runs,num_cohort_years);
+        smaller_scenario_lower_mat = NaN(num_stochas_runs,num_cohort_years);
+        smaller_scenario_upper_mat = NaN(num_stochas_runs,num_cohort_years);
+    end
 
-        diff_mat = larger_scenario_results_mat - smaller_scenario_results_mat;
-        if sum_cols
-            assert(isequal(size(diff_mat),[num_stochas_runs 1]))
-        else
-            assert(isequal(size(diff_mat),[num_stochas_runs num_cohort_years]))
-        end
-        diff_scenarios_mean_mat(geographical_unit_num,:) = mean(diff_mat,1);
-        diff_scenarios_lower_mat(geographical_unit_num,:) = prctile(diff_mat,2.5,1);
-        diff_scenarios_upper_mat(geographical_unit_num,:) = prctile(diff_mat,97.5,1);
+    diff_mat = larger_scenario_results_mat - smaller_scenario_results_mat;
+    if sum_cols
+        assert(isequal(size(diff_mat),[num_stochas_runs 1]))
+    else
+        assert(isequal(size(diff_mat),[num_stochas_runs num_cohort_years]))
+    end
+    diff_scenarios_mean_mat(geographical_unit_num,:) = mean(diff_mat,1);
+    diff_scenarios_lower_mat(geographical_unit_num,:) = prctile(diff_mat,2.5,1);
+    diff_scenarios_upper_mat(geographical_unit_num,:) = prctile(diff_mat,97.5,1);
 
 end % end of difference_in_deaths_fun function
 
@@ -2473,33 +2483,33 @@ function [BD_coverage_2020_2030_mat,Tot_Pop_2025_mat,...
     BD_coverage_2020_2030_mat,Tot_Pop_2025_mat,...
     NumSAg_chronic_5_year_olds_mat,Tot_Pop_5_year_olds_mat)
 
-        assert(isequal(size(BD_coverage_2020_2030_mat),[num_countries 2]))
-        assert(isequal(size(NumSAg_chronic_5_year_olds_mat),[num_countries num_stochas_runs num_calandar_years]))
-        assert(isequal(size(Tot_Pop_5_year_olds_mat),[num_countries num_stochas_runs num_calandar_years]))
+    assert(isequal(size(BD_coverage_2020_2030_mat),[num_countries 2]))
+    assert(isequal(size(NumSAg_chronic_5_year_olds_mat),[num_countries num_stochas_runs num_calandar_years]))
+    assert(isequal(size(Tot_Pop_5_year_olds_mat),[num_countries num_stochas_runs num_calandar_years]))
 
-        if strcmp(country_groupings,'regions')
-            BD_coverage_2020_2030_mat(geographical_unit_num,:) = NaN(1,2);
-            Tot_Pop_2025_mat(geographical_unit_num,:) = NaN;
-        else
-            scenario = ListOfScenarios{scenario_num};
-            assert(strcmp(scenario,scenario_name))
-            scenario_map = vaccination_map_default(scenario_name);
-            scenario_struct = scenario_map(geographical_unit);
-            BDvacc_rate_vec = scenario_struct.BirthDoseVacc(1:num_year_divisions:end) * 100;
-            assert(isequal(size(BDvacc_rate_vec),[1 (2100-1979)]))
-            BD_coverage_2020_2030_mat(geographical_unit_num,:) = BDvacc_rate_vec([begin_year_index end_year_index]);
-            Tot_Pop_2025_mat(geographical_unit_num,:) = scenario_struct.Tot_Pop_2025;
-        end
+    if strcmp(country_groupings,'regions')
+        BD_coverage_2020_2030_mat(geographical_unit_num,:) = NaN(1,2);
+        Tot_Pop_2025_mat(geographical_unit_num,:) = NaN;
+    else
+        scenario = ListOfScenarios{scenario_num};
+        assert(strcmp(scenario,scenario_name))
+        scenario_map = vaccination_map_default(scenario_name);
+        scenario_struct = scenario_map(geographical_unit);
+        BDvacc_rate_vec = scenario_struct.BirthDoseVacc(1:num_year_divisions:end) * 100;
+        assert(isequal(size(BDvacc_rate_vec),[1 (2100-1979)]))
+        BD_coverage_2020_2030_mat(geographical_unit_num,:) = BDvacc_rate_vec([begin_year_index end_year_index]);
+        Tot_Pop_2025_mat(geographical_unit_num,:) = scenario_struct.Tot_Pop_2025;
+    end
 
-        NumSAg_chronic_5_year_olds_mat(geographical_unit_num,:,:) = get_model_output(countries_list,calandar_years_vec,calandar_years_pos_vec,...
-            country_groupings,geographical_unit,scenario_name,scenario_num,results_cell_array,num_stochas_runs,'NumSAg_chronic_1yr_5_year_olds');
-        Tot_Pop_5_year_olds_mat(geographical_unit_num,:,:) = get_model_output(countries_list,calandar_years_vec,calandar_years_pos_vec,...
-            country_groupings,geographical_unit,scenario_name,scenario_num,results_cell_array,num_stochas_runs,'Tot_Pop_1yr_5_year_olds');
+    NumSAg_chronic_5_year_olds_mat(geographical_unit_num,:,:) = get_model_output(countries_list,calandar_years_vec,calandar_years_pos_vec,...
+        country_groupings,geographical_unit,scenario_name,scenario_num,results_cell_array,num_stochas_runs,'NumSAg_chronic_1yr_5_year_olds');
+    Tot_Pop_5_year_olds_mat(geographical_unit_num,:,:) = get_model_output(countries_list,calandar_years_vec,calandar_years_pos_vec,...
+        country_groupings,geographical_unit,scenario_name,scenario_num,results_cell_array,num_stochas_runs,'Tot_Pop_1yr_5_year_olds');
 
-        assert(isequal(size(BD_coverage_2020_2030_mat),[num_countries 2]))
-        assert(isequal(size(Tot_Pop_2025_mat),[num_countries 1]))
-        assert(isequal(size(NumSAg_chronic_5_year_olds_mat),[num_countries num_stochas_runs num_calandar_years]))
-        assert(isequal(size(Tot_Pop_5_year_olds_mat),[num_countries num_stochas_runs num_calandar_years]))
+    assert(isequal(size(BD_coverage_2020_2030_mat),[num_countries 2]))
+    assert(isequal(size(Tot_Pop_2025_mat),[num_countries 1]))
+    assert(isequal(size(NumSAg_chronic_5_year_olds_mat),[num_countries num_stochas_runs num_calandar_years]))
+    assert(isequal(size(Tot_Pop_5_year_olds_mat),[num_countries num_stochas_runs num_calandar_years]))
 
 end
 
@@ -2512,16 +2522,16 @@ function year_of_elim_prev_mat_lower_median_upper = ...
     scenario_name,scenario_num,...
     year_of_elim_prev_mat_lower_median_upper)
 
-        prev_perc_mat = get_model_output(countries_list,calandar_years_vec,calandar_years_pos_vec,...
-            country_groupings,geographical_unit,scenario_name,scenario_num,results_cell_array,num_stochas_runs,'NumSAg_chronic_1yr_5_year_olds','Tot_Pop_1yr_5_year_olds');
-        prev_perc_mat = prev_perc_mat * 100;
-        year_of_elim_prev_vec = arrayfun(@(xx) ...
-            assign_year_of_elim(calandar_years_vec,prev_perc_mat(xx,:),threshold_val), ...
-            1:size(prev_perc_mat,1))';
-        assert(isequal(size(year_of_elim_prev_vec),[num_stochas_runs 1]))
-        year_of_elim_prev_mat_lower_median_upper(geographical_unit_num,2) = median(year_of_elim_prev_vec,1);
-        year_of_elim_prev_mat_lower_median_upper(geographical_unit_num,1) = prctile(year_of_elim_prev_vec,2.5,1);
-        year_of_elim_prev_mat_lower_median_upper(geographical_unit_num,3) = prctile(year_of_elim_prev_vec,97.5,1);
+    prev_perc_mat = get_model_output(countries_list,calandar_years_vec,calandar_years_pos_vec,...
+        country_groupings,geographical_unit,scenario_name,scenario_num,results_cell_array,num_stochas_runs,'NumSAg_chronic_1yr_5_year_olds','Tot_Pop_1yr_5_year_olds');
+    prev_perc_mat = prev_perc_mat * 100;
+    year_of_elim_prev_vec = arrayfun(@(xx) ...
+        assign_year_of_elim(calandar_years_vec,prev_perc_mat(xx,:),threshold_val), ...
+        1:size(prev_perc_mat,1))';
+    assert(isequal(size(year_of_elim_prev_vec),[num_stochas_runs 1]))
+    year_of_elim_prev_mat_lower_median_upper(geographical_unit_num,2) = median(year_of_elim_prev_vec,1);
+    year_of_elim_prev_mat_lower_median_upper(geographical_unit_num,1) = prctile(year_of_elim_prev_vec,2.5,1);
+    year_of_elim_prev_mat_lower_median_upper(geographical_unit_num,3) = prctile(year_of_elim_prev_vec,97.5,1);
 
 end
 
@@ -2620,19 +2630,19 @@ end
 
 
 function [commaFormattedString] = CommaFormat(value)
-  % Split into integer part and fractional part.
-  [integerPart, decimalPart]=strtok(num2str(value),'.'); 
-  % Reverse the integer-part string.
-  integerPart=integerPart(end:-1:1); 
-  % Insert commas every third entry.
-  integerPart=[sscanf(integerPart,'%c',[3,inf])' ... 
-      repmat(',',ceil(length(integerPart)/3),1)]'; 
-  integerPart=integerPart(:)'; 
-  % Strip off any trailing commas.
-  integerPart=deblank(integerPart(1:(end-1)));
-  % Piece the integer part and fractional part back together again.
-  commaFormattedString = [integerPart(end:-1:1) decimalPart];
-  return; % CommaFormat
+    % Split into integer part and fractional part.
+    [integerPart, decimalPart]=strtok(num2str(value),'.'); 
+    % Reverse the integer-part string.
+    integerPart=integerPart(end:-1:1); 
+    % Insert commas every third entry.
+    integerPart=[sscanf(integerPart,'%c',[3,inf])' ... 
+        repmat(',',ceil(length(integerPart)/3),1)]'; 
+    integerPart=integerPart(:)'; 
+    % Strip off any trailing commas.
+    integerPart=deblank(integerPart(1:(end-1)));
+    % Piece the integer part and fractional part back together again.
+    commaFormattedString = [integerPart(end:-1:1) decimalPart];
+    return; % CommaFormat
 end
  
 
@@ -2717,8 +2727,11 @@ end % end function make_stochas_regions_countries_cell_arrays
 
 function [results_regions_scenario,results_countries_scenario] = get_regions_countries_structures(infilepath_stochastic_results,file_string,scenario_num)
 
-    results_regions_countries_scenario = ...
-        load(fullfile(infilepath_stochastic_results,['stochastic_summary_countries_regions_global_' file_string '_scenario_' scenario_num '.mat']));
+    full_filename = fullfile(infilepath_stochastic_results,['stochastic_summary_countries_regions_global_' file_string '_scenario_' scenario_num '.mat']);
+    if exist(full_filename)~=2
+        warning('There is a copy of this file in the Dropbox folder provided in the README.md file in the root directory.')
+    end
+    results_regions_countries_scenario = load(full_filename);
     % contains countryMap and regionMap
     results_regions_scenario = results_regions_countries_scenario.regionMap;
     results_countries_scenario = results_regions_countries_scenario.countryMap;

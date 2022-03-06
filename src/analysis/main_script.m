@@ -8,7 +8,12 @@ clear
 % This script, which contains 4 sensitivity analyses, will therefore take about 100 days to run on a desktop computer.
 
 
-basedir = fileparts(fileparts(pwd)); % path for folder two levels up from script
+currentFolder = pwd;
+pat = fullfile('icl-hbv','src','analysis');
+if ~endsWith(currentFolder,pat)
+    warning(['Please run this script from within the folder ' pat])
+end
+basedir = fileparts(fileparts(currentFolder)); % path for folder two levels up from script
 addpath(fullfile(basedir,'src','analysis')) % path for function country_level_analyses
 addpath(fullfile(basedir,'src','model')) % path for function HBVmodel
 

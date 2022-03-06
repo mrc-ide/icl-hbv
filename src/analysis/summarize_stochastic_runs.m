@@ -7,7 +7,12 @@ clear
 % particles are shuffled within each country before forming regional sums
 
 
-basedir = fileparts(fileparts(pwd)); % path for folder two levels up from script
+currentFolder = pwd;
+pat = fullfile('icl-hbv','src','analysis');
+if ~endsWith(currentFolder,pat)
+    warning(['Please run this script from within the folder ' pat])
+end
+basedir = fileparts(fileparts(currentFolder)); % path for folder two levels up from script
 
 
 sensitivity_analysis_list = {'default','infant_100','treat_medium','treat_high'};
@@ -153,7 +158,11 @@ function summarize_stochastic_runs_sens_scenario(sensitivity_analysis,...
     end_string = '.mat';
     particles_str = 'stochastic_run_2';    
     infilename = [begin_string sensitivity_analysis '_' particles_str end_string]; % results_countries_stochastic_run_1.mat
-    load(fullfile(basedir,'outputs',infilename)); % contains outMap
+    full_filename = fullfile(basedir,'outputs',infilename);
+    if exist(full_filename)~=2
+        warning('There is a copy of this file in the Dropbox folder provided in the README.md file in the root directory.')
+    end
+    load(full_filename); % contains outMap
     assert(length(outMap)==num_all_scenarios) % 12 scenarios
     Runs_map_run_2_scenario_ISO = outMap(scenario); % sensitivity analysis, treatment, scenario, run_num results
     Runs_map_run_2_scenario_ISO = Runs_map_run_2_scenario_ISO(ListOfISOs{1}); % sensitivity analysis, treatment, scenario, run_num AFG's results
@@ -208,7 +217,8 @@ function summarize_stochastic_runs_sens_scenario(sensitivity_analysis,...
 
         particles_str = ['stochastic_run_', stochas_run_str];    
         infilename = [begin_string sensitivity_analysis '_' particles_str end_string]; % results_countries_stochastic_run_1.mat
-        load(fullfile(basedir,'outputs',infilename)); % contains outMap
+        full_filename = fullfile(basedir,'outputs',infilename);
+        load(full_filename); % contains outMap
         assert(length(outMap)==num_all_scenarios) % 12 scenarios
         countryMap_source = outMap(scenario);
         assert(length(countryMap_source)==num_countries)
